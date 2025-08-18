@@ -31,11 +31,8 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
     trigger,
     getValues,
     clearErrors
-    clearErrors
   } = useForm<RegisterFormData>({
     mode: 'onChange',
-    reValidateMode: 'onChange',
-    criteriaMode: 'all',
     reValidateMode: 'onChange',
     criteriaMode: 'all',
     defaultValues: {
@@ -49,17 +46,19 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
 
   const watchPassword = watch('password');
   const watchAllFields = watch(); // Watch all fields for real-time updates
-  const watchAllFields = watch(); // Watch all fields for real-time updates
 
   // Debug function to check form state
   const debugFormState = () => {
+    const values = getValues();
+    const debugData = {
+      formValues: values,
+      fieldStates: {
+        name: !!values.name,
+        email: !!values.email,
         password: !!values.password,
         confirmPassword: !!values.confirmPassword
       },
-    const debugData = {
-      formValues: values,
       isValid,
-          {...register}
       isDirty,
       errors: Object.keys(errors),
       errorDetails: errors,
