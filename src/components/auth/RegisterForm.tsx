@@ -49,10 +49,13 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
 
   // Debug function to check form state
   const debugFormState = () => {
-        email: !!values.email,
-        password: !!values.password,
-        confirmPassword: !!values.confirmPassword
-      },
+    const values = getValues();
+    const fieldStatus = {
+      name: !!values.name,
+      email: !!values.email,
+      password: !!values.password,
+      confirmPassword: !!values.confirmPassword
+    };
     const debugData = {
       formValues: values,
       isValid,
