@@ -127,10 +127,29 @@ class ApiClient {
 
   // Authentication methods
   async register(userData: RegisterData): Promise<ApiResponse<LoginResponse>> {
-    return this.request<LoginResponse>('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(userData),
+    console.log('🌐 API Client: Registration request started', {
+      email: userData.email,
+      name: userData.name,
+      role: userData.role
     });
+    
+    try {
+      const response = await this.request<LoginResponse>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+      });
+      
+      console.log('🌐 API Client: Registration response received', {
+        success: response.success,
+        hasData: !!response.data,
+        message: response.message
+      });
+      
+      return response;
+    } catch (error) {
+      console.error('🌐 API Client: Registration request failed', error);
+      throw error;
+    }
   }
 
   async login(credentials: LoginData): Promise<ApiResponse<LoginResponse>> {

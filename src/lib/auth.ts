@@ -79,6 +79,12 @@ class AuthService {
     this.authState.error = null;
     this.notify();
 
+    console.log('🔧 AuthService.register called with:', {
+      email,
+      name,
+      userType,
+      hasDiscountCode: !!discountCode
+    });
     try {
       const registerData: RegisterData = {
         email,
@@ -89,7 +95,9 @@ class AuthService {
         discountCode
       };
       
+      console.log('📡 Calling API register with:', registerData);
       const response = await apiClient.register(registerData);
+      console.log('📡 API response:', response);
       
       if (response.success && response.data) {
         const { user, tokens } = response.data;
@@ -111,15 +119,20 @@ class AuthService {
         };
         
         this.notify();
+        console.log('✅ Registration successful, user logged in');
         return user;
       } else {
-        throw new Error(response.message || 'Registration failed');
+        const errorMessage = response.message || 'Registration failed';
+        console.error('❌ Registration failed:', errorMessage);
+        throw new Error(errorMessage);
       }
     } catch (error: any) {
+      console.error('❌ Registration error caught:', error);
       this.authState.loading = false;
-      this.authState.error = error.message || 'Registration failed';
+      const errorMessage = error.message || 'Registration failed';
+      this.authState.error = errorMessage;
       this.notify();
-      throw error;
+      throw new Error(errorMessage);
     }
   }
 

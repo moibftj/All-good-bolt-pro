@@ -26,11 +26,20 @@ router.use(sanitizeInput);
 // Registration endpoint
 router.post('/register', authLimiter, validateRegistration, async (req, res) => {
   try {
+    console.log('🔧 Registration endpoint hit:', {
+      email: req.body.email,
+      name: req.body.name,
+      role: req.body.role,
+      hasDiscountCode: !!req.body.discountCode
+    });
+
     const { email, name, password, role, discountCode } = req.body;
 
     // Check if user already exists
+    console.log('🔍 Checking if user exists...');
     const existingUser = await UserModel.findByEmail(email, role);
     if (existingUser) {
+      console.log('❌ User already exists');
       return res.status(409).json({
         success: false,
         message: 'User with this email already exists'
@@ -40,17 +49,21 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     // If discount code is provided, verify it exists
     let referredBy = null;
     if (discountCode) {
+      console.log('🔍 Verifying discount code:', discountCode);
       const referrer = await UserModel.findByDiscountCode(discountCode);
       if (!referrer) {
+        console.log('❌ Invalid discount code');
         return res.status(400).json({
           success: false,
           message: 'Invalid discount code'
         });
       }
       referredBy = referrer.id;
+      console.log('✅ Valid discount code, referrer found');
     }
 
     // Create user
+    console.log('🔧 Creating new user...');
     const user = await UserModel.createUser({
       email,
       name,
@@ -58,37 +71,45 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
       role,
       discountCode: referredBy
     });
+    console.log('✅ User created successfully:', user.id);
 
     // Generate tokens
+    console.log('🔧 Generating tokens...');
     const { accessToken, refreshToken } = generateTokens({
       id: user.id,
       email: user.email,
       role: user.role
     });
+    console.log('✅ Tokens generated');
 
     // Send welcome email
     try {
+      console.log('📧 Sending welcome email...');
       await sendWelcomeEmail(user.email, user.name);
+      console.log('✅ Welcome email sent');
     } catch (emailError) {
-      console.error('Failed to send welcome email:', emailError);
+      console.error('⚠️ Failed to send welcome email:', emailError);
       // Don't fail registration if email fails
     }
 
     // If user was referred, increment referrer's points
     if (referredBy) {
       try {
+        console.log('🔧 Updating referrer points...');
         const referrer = await UserModel.findById(referredBy, 'remote_employee');
         if (referrer) {
           await UserModel.updateUser(referredBy, 'remote_employee', {
             referral_points: (referrer.referral_points || 0) + 1
           } as Partial<any>);
+          console.log('✅ Referrer points updated');
         }
       } catch (referralError) {
-        console.error('Failed to update referral points:', referralError);
+        console.error('⚠️ Failed to update referral points:', referralError);
         // Don't fail registration if referral update fails
       }
     }
 
+    console.log('✅ Registration completed successfully');
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -111,10 +132,14 @@ router.post('/register', authLimiter, validateRegistration, async (req, res) => 
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ Registration endpoint error:', error);
     res.status(500).json({
       success: false,
-      message: 'Internal server error during registration'
+      message: 'Internal server error during registration',
+      ...(process.env.NODE_ENV === 'development' && { 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
     });
   }
 });
