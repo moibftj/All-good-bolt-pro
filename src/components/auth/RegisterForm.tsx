@@ -27,11 +27,14 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid, isDirty, isSubmitting },
     trigger,
-    getValues
+    getValues,
+    clearErrors
   } = useForm<RegisterFormData>({
     mode: 'onChange',
+    reValidateMode: 'onChange',
+    criteriaMode: 'all',
     defaultValues: {
       name: '',
       email: '',
@@ -42,15 +45,20 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
   });
 
   const watchPassword = watch('password');
+  const watchAllFields = watch(); // Watch all fields for real-time updates
 
   // Debug function to check form state
   const debugFormState = () => {
-    const values = getValues();
+        email: !!values.email,
+        password: !!values.password,
+        confirmPassword: !!values.confirmPassword
+      },
     const debugData = {
       formValues: values,
       isValid,
       isDirty,
       errors: Object.keys(errors),
+      errorDetails: errors,
       loading
     };
     console.log('🔍 Form Debug Info:', debugData);
@@ -143,6 +151,7 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
           label="Full Name"
           id="register-name"
           autoComplete="name"
+          value={watchAllFields.name || ''}
           {...register('name', {
             required: 'Full name is required',
             minLength: {
@@ -167,6 +176,7 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
           type="email"
           id="register-email"
           autoComplete="email"
+          value={watchAllFields.email || ''}
           {...register('email', {
             required: 'Email address is required',
             pattern: {
@@ -187,6 +197,7 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
           type="password"
           id="register-password"
           autoComplete="new-password"
+          value={watchAllFields.password || ''}
           {...register('password', {
             required: 'Password is required',
             minLength: {
@@ -213,10 +224,11 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
           type="password"
           id="register-confirm-password"
           autoComplete="new-password"
+          value={watchAllFields.confirmPassword || ''}
           {...register('confirmPassword', {
             required: 'Please confirm your password',
             validate: (value) => {
-              if (value !== watchPassword) {
+              if (value !== watchAllFields.password) {
                 return 'Passwords do not match';
               }
               return true;
@@ -231,6 +243,7 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
             label="Discount Code (Optional)"
             placeholder="Enter remote employee discount code"
             id="register-discount-code"
+            value={watchAllFields.discountCode || ''}
             {...register('discountCode', {
               minLength: {
                 value: 6,
@@ -251,7 +264,8 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
             type="submit"
             className="w-full"
             loading={loading}
-            disabled={loading || !isValid || !isDirty}
+            disabled={loading || !isValid}
+            onClick={!isValid ? debugFormState : undefined}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
@@ -259,7 +273,7 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
           {/* Debug info for button state */}
           {process.env.NODE_ENV === 'development' && (
             <div className="text-xs text-gray-500">
-              Button state: isValid={isValid.toString()}, isDirty={isDirty.toString()}, loading={loading.toString()}
+              Button state: isValid={isValid.toString()}, isDirty={isDirty.toString()}, loading={loading.toString()}, hasErrors={Object.keys(errors).length > 0}
             </div>
           )}
         </div>
