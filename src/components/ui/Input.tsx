@@ -124,10 +124,12 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
               type="button" 
               onClick={debugFormState}
               className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
             >
               Debug Form
             </button>
-            <button 
+  ({ label, error, helper, leftIcon, rightIcon, className, ...props }, ref) => {
               type="button" 
               onClick={validateForm}
               className="bg-green-500 text-white px-2 py-1 rounded text-xs"
@@ -135,15 +137,29 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
               Validate
             </button>
           </div>
-          {debugInfo && (
-            <pre className="whitespace-pre-wrap text-xs bg-white p-2 rounded">
-              {debugInfo}
-            </pre>
+        <div className="relative">
+          {leftIcon && (
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+              {leftIcon}
+            </div>
+          )}
+          <input
+            ref={ref}
+            className={clsx(
+              'material-input',
+              leftIcon && 'pl-10',
+              rightIcon && 'pr-10',
+              error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+              className
+            )}
+            {...props}
+          />
+          {rightIcon && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+              {rightIcon}
+            </div>
           )}
         </div>
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit, handleFormError)} className="space-y-4" noValidate>
         {error && (
           <div className="p-3 text-sm text-red-700 bg-red-100 rounded-md">
             <strong>Registration Error:</strong> {error}

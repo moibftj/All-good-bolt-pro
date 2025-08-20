@@ -16,40 +16,40 @@ body {
 
 /* Custom Gradient Background */
 .gradient-bg {
-  background: linear-gradient(135deg, #F4B942 0%, #E85D75 100%);
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffcd3c 100%);
   min-height: 100vh;
 }
 
 /* Material Glass Card */
 .material-glass-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(139, 69, 19, 0.85);
   backdrop-filter: blur(20px);
-  border-radius: 8px;
+  border-radius: 24px;
   box-shadow: 
-    0 4px 8px rgba(0,0,0,0.14), 
-    0 6px 8px rgba(0,0,0,0.12);
+    0 8px 32px rgba(0,0,0,0.3), 
+    0 16px 64px rgba(0,0,0,0.2);
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .material-glass-card:hover {
   box-shadow: 
-    0 8px 16px rgba(0,0,0,0.14), 
-    0 12px 16px rgba(0,0,0,0.12);
+    0 12px 40px rgba(0,0,0,0.4), 
+    0 20px 80px rgba(0,0,0,0.3);
 }
 
 /* Material Button with Ripple */
 .material-button {
-  background: #1976D2;
+  background: rgba(139, 69, 19, 0.6);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   padding: 12px 24px;
   font-weight: 500;
   font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: 0.2px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -58,11 +58,13 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .material-button:hover {
-  background: #1565C0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background: rgba(139, 69, 19, 0.8);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .material-button:active {
@@ -70,32 +72,39 @@ body {
 }
 
 .material-button-secondary {
-  background: white;
-  color: #1976D2;
-  border: 1px solid #1976D2;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .material-button-secondary:hover {
-  background: #f5f5f5;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Material Input Fields */
 .material-input {
   width: 100%;
-  padding: 16px 12px 8px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  padding: 16px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   font-size: 16px;
-  background: white;
+  background: rgba(139, 69, 19, 0.4);
+  color: white;
   transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
   position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.material-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .material-input:focus {
   outline: none;
-  border-color: #1976D2;
+  border-color: rgba(255, 255, 255, 0.3);
   border-width: 2px;
-  box-shadow: 0 0 0 1px #1976D2;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+  background: rgba(139, 69, 19, 0.6);
 }
 
 .material-input-label {
@@ -103,10 +112,10 @@ body {
   left: 12px;
   top: 16px;
   font-size: 16px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
   pointer-events: none;
-  background: white;
+  background: transparent;
   padding: 0 4px;
 }
 
@@ -114,8 +123,11 @@ body {
 .material-input:not(:placeholder-shown) + .material-input-label {
   top: -8px;
   font-size: 12px;
-  color: #1976D2;
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 500;
+  background: rgba(139, 69, 19, 0.9);
+  border-radius: 4px;
+  padding: 2px 6px;
 }
 
 /* Ripple Animation */
@@ -145,25 +157,151 @@ body {
 
 /* Dashboard Styles */
 .dashboard-nav {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(139, 69, 19, 0.85);
   backdrop-filter: blur(15px);
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .nav-item {
   transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .nav-item:hover {
-  background: rgba(25, 118, 210, 0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  color: white;
 }
 
 .nav-item.active {
-  background: rgba(25, 118, 210, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  color: #1976D2;
+  color: white;
   font-weight: 600;
+}
+
+/* Auth Toggle Styles */
+.auth-toggle {
+  display: flex;
+  background: rgba(139, 69, 19, 0.6);
+  border-radius: 20px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-toggle-button {
+  padding: 8px 20px;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.auth-toggle-button.active {
+  background: rgba(139, 69, 19, 0.8);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.auth-close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(139, 69, 19, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.auth-close-button:hover {
+  background: rgba(139, 69, 19, 0.8);
+  color: white;
+}
+
+/* Gradient Button */
+.gradient-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.gradient-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.gradient-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Social Login Buttons */
+.social-button {
+  background: rgba(139, 69, 19, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  min-height: 48px;
+}
+
+.social-button:hover {
+  background: rgba(139, 69, 19, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Remember Me Checkbox */
+.remember-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  background: rgba(139, 69, 19, 0.4);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.remember-checkbox:checked {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.remember-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Custom Scrollbar */
@@ -172,17 +310,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 69, 19, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Screen reader only content */

@@ -19,21 +19,11 @@ export function WelcomePage() {
   };
 
   const getRoleTitle = () => {
-    switch (selectedRole) {
-      case 'user': return 'Regular User Access';
-      case 'remote_employee': return 'Remote Employee Access';
-      case 'admin': return 'Administrator Access';
-      default: return '';
-    }
+    return isLogin ? 'Welcome back' : 'Start automating today';
   };
 
   const getRoleSubtitle = () => {
-    switch (selectedRole) {
-      case 'user': return 'Generate professional legal letters';
-      case 'remote_employee': return 'Manage referrals and commissions';
-      case 'admin': return 'System administration and oversight';
-      default: return '';
-    }
+    return undefined;
   };
 
   if (!selectedRole) {
@@ -45,16 +35,14 @@ export function WelcomePage() {
   }
 
   return (
-    <AuthLayout title={getRoleTitle()} subtitle={getRoleSubtitle()}>
-      <div className="mb-4">
-        <button
-          onClick={handleBack}
-          className="text-material-primary hover:underline text-sm font-medium"
-        >
-          ← Back to role selection
-        </button>
-      </div>
-
+    <AuthLayout 
+      title={getRoleTitle()} 
+      subtitle={getRoleSubtitle()}
+      showToggle={selectedRole !== 'admin'}
+      isLogin={isLogin}
+      onToggle={setIsLogin}
+      onClose={handleBack}
+    >
       {isLogin || selectedRole === 'admin' ? (
         <LoginForm
           userType={selectedRole}

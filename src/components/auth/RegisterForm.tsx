@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Mail, Eye, EyeOff, User } from 'lucide-react';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../hooks/useAuth';
@@ -20,21 +21,17 @@ interface RegisterFormProps {
 export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [debugInfo, setDebugInfo] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register: registerUser } = useAuth();
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid, isDirty, isSubmitting },
-    trigger,
-    getValues,
-    clearErrors
+    formState: { errors, isValid }
   } = useForm<RegisterFormData>({
     mode: 'onChange',
-    reValidateMode: 'onChange',
-    criteriaMode: 'all',
     defaultValues: {
       name: '',
       email: '',
@@ -45,34 +42,11 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
   });
 
   const watchPassword = watch('password');
-  const watchAllFields = watch(); // Watch all fields for real-time updates
-
-  // Debug function to check form state
-  const debugFormState = () => {
-    const values = getValues();
-    const fieldStatus = {
-      name: !!values.name,
-      email: !!values.email,
-      password: !!values.password,
-      confirmPassword: !!values.confirmPassword
-    };
-    const debugData = {
-      formValues: values,
-      isValid,
-      isDirty,
-      errors: Object.keys(errors),
-      errorDetails: errors,
-      loading
-    };
-    console.log('🔍 Form Debug Info:', debugData);
-    setDebugInfo(JSON.stringify(debugData, null, 2));
-  };
 
   const onSubmit = async (data: RegisterFormData) => {
     console.log('📝 Form submission started:', data);
     setLoading(true);
     setError('');
-    setDebugInfo('');
     
     try {
       console.log('🚀 Calling registerUser with:', {
@@ -95,66 +69,25 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
       console.error('❌ Registration error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Registration failed. Please try again.';
       setError(errorMessage);
-      setDebugInfo(`Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFormError = (errors: any) => {
-    console.error('🚨 Form validation errors:', errors);
-    setDebugInfo(`Validation errors: ${JSON.stringify(errors, null, 2)}`);
-  };
-
-  // Manual validation trigger for debugging
-  const validateForm = async () => {
-    console.log('🔍 Manual validation triggered');
-    const result = await trigger();
-    console.log('Validation result:', result);
-    debugFormState();
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Debug Panel (only in development) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="bg-gray-100 p-3 rounded text-xs">
-          <div className="flex gap-2 mb-2">
-            <button 
-              type="button" 
-              onClick={debugFormState}
-              className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-            >
-              Debug Form
-            </button>
-            <button 
-              type="button" 
-              onClick={validateForm}
-              className="bg-green-500 text-white px-2 py-1 rounded text-xs"
-            >
-              Validate
-            </button>
-          </div>
-          {debugInfo && (
-            <pre className="whitespace-pre-wrap text-xs bg-white p-2 rounded">
-              {debugInfo}
-            </pre>
-          )}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit, handleFormError)} className="space-y-4" noValidate>
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
         {error && (
-          <div className="p-3 text-sm text-red-700 bg-red-100 rounded-md">
+          <div className="p-3 text-sm text-red-300 bg-red-900/20 rounded-md border border-red-500/20">
             <strong>Registration Error:</strong> {error}
           </div>
         )}
 
         <Input
-          label="Full Name"
           id="register-name"
           autoComplete="name"
-          value={watchAllFields.name || ''}
+          placeholder="Full name"
+          leftIcon={<User className="w-5 h-5" />}
           {...register('name', {
             required: 'Full name is required',
             minLength: {
@@ -171,15 +104,14 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
             }
           })}
           error={errors.name?.message}
-          placeholder="Enter your full name"
         />
 
         <Input
-          label="Email Address"
           type="email"
           id="register-email"
           autoComplete="email"
-          value={watchAllFields.email || ''}
+          placeholder="Company email"
+          leftIcon={<Mail className="w-5 h-5" />}
           {...register('email', {
             required: 'Email address is required',
             pattern: {
@@ -192,15 +124,22 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
             }
           })}
           error={errors.email?.message}
-          placeholder="Enter your email address"
         />
 
         <Input
-          label="Password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           id="register-password"
           autoComplete="new-password"
-          value={watchAllFields.password || ''}
+          placeholder="Password"
+          rightIcon={
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-white/60 hover:text-white"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          }
           {...register('password', {
             required: 'Password is required',
             minLength: {
@@ -219,34 +158,38 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
             }
           })}
           error={errors.password?.message}
-          placeholder="Create a strong password"
         />
 
         <Input
-          label="Confirm Password"
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           id="register-confirm-password"
           autoComplete="new-password"
-          value={watchAllFields.confirmPassword || ''}
+          placeholder="Confirm email address"
+          rightIcon={
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="text-white/60 hover:text-white"
+            >
+              {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          }
           {...register('confirmPassword', {
             required: 'Please confirm your password',
             validate: (value) => {
-              if (value !== watchAllFields.password) {
+              if (value !== watchPassword) {
                 return 'Passwords do not match';
               }
               return true;
             }
           })}
           error={errors.confirmPassword?.message}
-          placeholder="Confirm your password"
         />
 
         {userType === 'user' && (
           <Input
-            label="Discount Code (Optional)"
             placeholder="Enter remote employee discount code"
             id="register-discount-code"
-            value={watchAllFields.discountCode || ''}
             {...register('discountCode', {
               minLength: {
                 value: 6,
@@ -258,39 +201,47 @@ export function RegisterForm({ userType, onSwitchToLogin }: RegisterFormProps) {
               }
             })}
             error={errors.discountCode?.message}
-            helper="Enter a discount code from a remote employee to get benefits"
           />
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-4">
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              className="remember-checkbox"
+            />
+            <span className="text-sm text-white/70">
+              Keep up with our constant improvements through our newsletter
+            </span>
+          </label>
+
           <Button
             type="submit"
             className="w-full"
+            variant="gradient"
             loading={loading}
             disabled={loading || !isValid}
-            onClick={!isValid ? debugFormState : undefined}
           >
-            {loading ? 'Creating Account...' : 'Create Account'}
+            {loading ? 'Creating Account...' : 'Start free 14-day trial'}
           </Button>
-          
-          {/* Debug info for button state */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="text-xs text-gray-500">
-              Button state: isValid={isValid.toString()}, isDirty={isDirty.toString()}, loading={loading.toString()}, hasErrors={Object.keys(errors).length > 0}
-            </div>
-          )}
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white/60">
             Already have an account?{' '}
             <button
               type="button"
               onClick={onSwitchToLogin}
-              className="text-material-primary hover:underline font-medium"
+              className="text-white hover:underline font-medium"
             >
               Sign in
             </button>
+          </p>
+        </div>
+
+        <div className="text-center space-y-2">
+          <p className="text-xs text-white/50">
+            By continuing, you agree to our terms and conditions, Privacy policy.
           </p>
         </div>
       </form>
