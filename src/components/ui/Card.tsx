@@ -1,36 +1,24 @@
 import React from 'react';
 import { clsx } from 'clsx';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  className?: string;
-  elevated?: boolean;
-  glass?: boolean;
 }
 
-export function Card({ 
-  children, 
-  className, 
-  elevated = false, 
-  glass = false, 
-  onClick,
-  ...rest 
-}: CardProps) {
+export const Card: React.FC<CardProps> = ({
+  className,
+  children,
+  ...props
+}) => {
   return (
     <div
       className={clsx(
-        'rounded-lg border transition-all duration-300',
-        glass 
-          ? 'material-glass-card' 
-          : 'bg-white border-gray-200 shadow-material-1',
-        elevated && 'shadow-material-2 hover:shadow-material-3',
-        onClick && 'cursor-pointer',
+        'rounded-lg border border-gray-200 bg-white shadow-sm',
         className
       )}
-      onClick={onClick}
-      {...rest}
+      {...props}
     >
       {children}
     </div>
   );
-}
+};
